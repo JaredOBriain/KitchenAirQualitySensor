@@ -6,6 +6,7 @@ from matplotlib.animation import FuncAnimation
 from datetime import datetime
 import math
 import os
+import glob
 
 # ---------------- CONFIG ----------------
 CSV_FILE = "./sensor_logs/latest.csv"   # change to your log file path
@@ -18,6 +19,7 @@ EXCLUDE_COLUMNS = [
     "Relative_IAQ"
 ]
 NUM_COLUMNS = 3
+ALERT_DIR = "./alerts"
 # ----------------------------------------
 
 
@@ -66,6 +68,44 @@ def read_latest_data():
         return df
     except:
         return None
+    
+    
+def get_latest_alerts():
+    try:
+        if not os.path.isdir(ALERT_DIR):
+            return []
+
+        # Match watchdog naming: alerts_YYYYMMDD_HH.csv
+        now = datetime.now()
+        filename = f"alerts_{now.strftime('%Y%m%d_%H')}.csv"
+        full_path = os.path.join(ALERT_DIR, filename)
+
+        if not os.path.exists(full_path):
+            return []
+
+        df = pd.read_csv(full_path)
+
+        if df.empty:
+            return []
+
+        # Just show last few alerts
+        recent = df.tail(5)
+
+        alerts = []
+        for _, row in recent.iterrows():
+            alerts.append({
+                "parameter": row["parameter"],
+                "avg": row["average_value"],
+                "limit": row["limit"],
+                "exposure_samples": row.get("exposure_samples", 0)
+            })
+
+        return alerts
+
+    except Exception:
+        return []
+
+
 
 def get_plot_columns(df):
     cols = []
@@ -121,6 +161,28 @@ fig.subplots_adjust(
 
 fig.patch.set_facecolor(BACKGROUND_COLOR)
 
+alert_box = fig.text(
+    0.68,          # right side
+    0.12,          # bottom
+    "",
+    ha="left",
+    va="bottom",
+    fontsize=11,
+    fontweight="bold",
+    color="white",
+    bbox=dict(
+    facecolor="#B71C1C",   # deeper red
+    edgecolor="white",
+    linewidth=1.5,
+    alpha=0.9,
+    boxstyle="round,pad=0.6"
+)
+
+)
+alert_box.set_visible(False)
+
+
+
 axes = axes.flatten()
 
 lines = []
@@ -172,6 +234,25 @@ def update(frame):
         axes[i].set_xlim(time.min(), time.max())
         axes[i].relim()
         axes[i].autoscale_view()
+
+    alerts = get_latest_alerts()
+
+    if alerts:
+        alert_lines = []
+        for a in alerts:
+            exposure_time = int(a["exposure_samples"]) * 10  # CHECK_INTERVAL=10
+            alert_lines.append(
+                f"{a['parameter']} = {a['avg']} "
+                f"(limit {a['limit']}) "
+                f"[{exposure_time}s]"
+            )
+
+        alert_box.set_text("ALERTS:\n" + "\n".join(alert_lines))
+        alert_box.set_visible(True)
+    else:
+        alert_box.set_visible(False)
+
+
 
     fig.canvas.draw_idle()
 

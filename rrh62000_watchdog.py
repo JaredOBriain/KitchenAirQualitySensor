@@ -6,7 +6,6 @@ import os
 import RPi.GPIO as GPIO
 
 
-from collections import deque
 from datetime import datetime
 from collections import deque, defaultdict
 
@@ -93,7 +92,7 @@ LIMITS = {
     # -------------------------
     # Gases
     # -------------------------
-    "TVOC_ugm3": {
+    "TVOC_ppm": {
         "max": 300,
       #  "exposure_samples": 6    # ~1 minutes
     },
@@ -223,13 +222,15 @@ def check_limits_with_exposure(averages):
         # Decide whether to alert
         if violated:
             if exposure_required:
-                if exposure_counters[field] >= exposure_required:
-                    alerts.append({
-                        "parameter": field,
-                        "avg": avg,
-                        "limit": limit,
-                        "exposure_samples": exposure_counters[field]
-                    })
+                if exposure_required:
+                    if exposure_counters[field] >= exposure_required:
+                        alerts.append({
+                            "parameter": field,
+                            "avg": avg,
+                            "limit": max_limit if max_limit is not None else min_limit,
+                            "exposure_samples": exposure_counters[field]
+                        })
+
 
             else:
                 # Immediate alert
