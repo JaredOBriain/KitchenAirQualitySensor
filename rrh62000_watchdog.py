@@ -58,17 +58,17 @@ LIMITS = {
     # -------------------------
     "PM1_KCl": {
         "max": 15.0,
-      #  "exposure_samples": 60    # ~10 minutes
+        "exposure_samples": 60    # ~10 minutes
     },
 
     "PM2.5_KCl": {
         "max": 20.0,
-      #  "exposure_samples": 15    # ~2.5 minutes
+        "exposure_samples": 15    # ~2.5 minutes
     },
 
     "PM10_KCl": {
         "max": 50.0,
-      #  "exposure_samples": 15
+        "exposure_samples": 15
     },
 
     # -------------------------
@@ -76,17 +76,17 @@ LIMITS = {
     # -------------------------
     "PM1_Smoke": {
         "max": 20.0,
-      #  "exposure_samples": 60
+        "exposure_samples": 60
     },
 
     "PM2.5_Smoke": {
         "max": 20.0,
-      #  "exposure_samples": 15
+        "exposure_samples": 15
     },
 
     "PM10_Smoke": {
         "max": 50.0,
-      #  "exposure_samples": 15
+        "exposure_samples": 15
     },
 
     # -------------------------
@@ -94,20 +94,20 @@ LIMITS = {
     # -------------------------
     "TVOC_ppm": {
         "max": 300,
-      #  "exposure_samples": 6    # ~1 minutes
+        "exposure_samples": 6    # ~1 minutes
     },
 
     "eCO2_ppm": {
         "max": 1000,
-      #  "exposure_samples": 6    # ~1 minutes
+        "exposure_samples": 6    # ~1 minutes
     },
 
     # -------------------------
     # Air Quality Index
     # -------------------------
     "IAQ": {
-        "max": 5,
-      #  "exposure_samples": 30    # ~5 minutes
+        "max": 3,
+        "exposure_samples": 30    # ~5 minutes
     },
 
     "Relative_IAQ": {
