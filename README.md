@@ -2,6 +2,11 @@
 
 A real-time indoor air quality monitoring system built around the RRH62000 sensor, providing continuous environmental monitoring, live visualization, and exposure-aware alerting.
 
+
+<img width="810" height="423" alt="image" src="https://github.com/user-attachments/assets/64b0a664-9c2d-48cd-b819-bf1db872fb55" />
+
+
+
 🏗 System Architecture
 RRH62000 Sensor
        │
