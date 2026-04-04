@@ -1,4 +1,4 @@
-📡 RRH62000 Indoor Air Quality Monitoring System
+ RRH62000 Indoor Air Quality Monitoring System
 
 A real-time indoor air quality monitoring system built around the RRH62000 sensor, providing continuous environmental monitoring, live visualization, and exposure-aware alerting.
 
@@ -7,7 +7,7 @@ A real-time indoor air quality monitoring system built around the RRH62000 senso
 
 
 
-🏗 System Architecture
+System Architecture
 RRH62000 Sensor
        │
        ▼
@@ -20,7 +20,7 @@ Sensor Logger
        │
        └──► Dashboard (live graphs + alerts)
 
-📁 File Structure
+ File Structure
 project/
 ├── sensor_logger.py
 ├── watchdog.py
@@ -30,7 +30,7 @@ project/
 └── alerts/
     └── alerts_YYYYMMDD_HH.csv
 
-1️⃣ Sensor Logger
+ Sensor Logger
 
 Purpose:
 Reads data from the RRH62000 sensor over I²C and logs it to rotating hourly CSV files.
@@ -75,7 +75,7 @@ Index Scale:
 
 150+ → Very Poor
 
-2️⃣ Watchdog
+ Watchdog
 
 Purpose:
 Continuously monitors live data and detects threshold violations.
@@ -116,7 +116,7 @@ LED flashes on configured GPIO pin if any parameter exceeds limits
 
 Alert entry written to CSV
 
-3️⃣ Dashboard
+ Dashboard
 
 Purpose:
 Live graphical display of:
@@ -152,7 +152,7 @@ eCO2_ppm = 1300 (limit 1000) [60s]
 
 Alerts clear automatically when conditions return to normal.
 
-🔄 Hourly Rotation Mechanism
+ Hourly Rotation Mechanism
 
 Every hour, the Sensor Logger:
 
@@ -164,12 +164,12 @@ Updates latest.csv symlink
 
 Watchdog and Dashboard automatically follow the new file — no restart required.
 
-⚙ Configuration Points
+ Configuration Points
 Script	Configurable Parameters
 Logger	LOG_INTERVAL, IAQ weighting, I²C bus & address
 Watchdog	SAMPLE_WINDOW, CHECK_INTERVAL, Limit thresholds, GPIO pin
 Dashboard	MAX_POINTS, Update interval, Grid layout, Colour map, Alert position
-🛠 Recommended Deployment
+ Recommended Deployment
 
 Run all three services via systemd:
 
@@ -185,7 +185,7 @@ Watchdog
 
 Dashboard
 
-🧠 Summary
+ Summary
 
 The RRH62000 Indoor Air Quality Monitoring System provides:
 
