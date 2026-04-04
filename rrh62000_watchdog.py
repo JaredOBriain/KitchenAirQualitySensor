@@ -46,13 +46,13 @@ LIMITS = {
 
     # Particulate Matter (KCl)
     "PM1_KCl": {"max": 15.0},
-    "PM2.5_KCl": {"max": 20.0},
-    "PM10_KCl": {"max": 50.0},
+    "PM2.5_KCl": {"max": 30.0},
+    "PM10_KCl": {"max": 75.0},
 
     # Particulate Matter (Smoke)
     "PM1_Smoke": {"max": 20.0},
-    "PM2.5_Smoke": {"max": 20.0},
-    "PM10_Smoke": {"max": 50.0},
+    "PM2.5_Smoke": {"max": 30.0},
+    "PM10_Smoke": {"max": 75.0},
 
     # Gases
     "TVOC_ppm": {"max": 300},

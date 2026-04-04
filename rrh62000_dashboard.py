@@ -189,13 +189,23 @@ for i, col in enumerate(plot_columns):
     ax.set_facecolor("#1E1E1E")
     ax.grid(True, color=GRID_COLOR, alpha=0.3)
 
-    ax.set_title(
+    
+    
+    if(col == "TVOC_ppm"):
+        ax.set_title(
+        f"TVOC ({unit})",
+        fontsize=11,
+        fontweight="bold",
+        color=color,
+        pad=8)
+    else:
+        ax.set_title(
         f"{col} ({unit})",
         fontsize=11,
         fontweight="bold",
         color=color,
         pad=8
-    )
+        )
 
     ax.tick_params(axis="x", rotation=45, colors=TEXT_COLOR)
     ax.tick_params(axis="y", colors=TEXT_COLOR)
@@ -244,10 +254,20 @@ def update(frame):
     timestamps = df["timestamp"]
 
     for i, col in enumerate(plot_columns):
-        lines[i].set_data(timestamps, df[col])
-        axes[i].set_xlim(timestamps.min(), timestamps.max())
-        axes[i].relim()
-        axes[i].autoscale_view()
+        
+        if(col == "TVOC_ppm"):
+            lines[i].set_data(timestamps, df[col]*1000*2)
+            axes[i].set_xlim(timestamps.min(), timestamps.max())
+            axes[i].relim()
+            axes[i].autoscale_view()
+        else:
+            lines[i].set_data(timestamps, df[col])
+            axes[i].set_xlim(timestamps.min(), timestamps.max())
+            axes[i].relim()
+            axes[i].autoscale_view()
+        
+        
+        
 
     alerts = get_latest_alerts()
 

@@ -71,7 +71,7 @@ def s16(data, index):
 def calculate_custom_iaq(pm25, pm10, tvoc, eco2):
     """
     EU-weighted Indoor Air Quality Index.
-    Returns 0–150+ scale.
+    
     """
 
     # Reference limits (EU / WHO)
@@ -80,21 +80,21 @@ def calculate_custom_iaq(pm25, pm10, tvoc, eco2):
     TVOC_REF = 300.0
     CO2_REF = 1000.0
 
-    # Normalized pollutant burden
-    pm25_score = min(pm25 / PM25_REF, 1.5)
-    pm10_score = min(pm10 / PM10_REF, 1.5)
-    tvoc_score = min(tvoc / TVOC_REF, 1.5)
-    co2_score = min(eco2 / CO2_REF, 1.5)
 
-    # Weighted health model
-    burden = (
-        0.40 * pm25_score +
-        0.20 * pm10_score +
-        0.20 * tvoc_score +
-        0.20 * co2_score
-    )
+    tvoc_ugm3 = tvoc * 1000 *2
 
-    return round(burden * 100, 2)
+    ratio_tvoc = tvoc_ugm3 / TVOC_REF;
+
+    #Calculate individual pollutant ratios
+    ratio_pm25 = pm25 / PM25_REF
+    ratio_pm10 = pm10 / PM10_REF
+    ratio_tvoc = tvoc / TVOC_REF
+    ratio_co2  = eco2  / CO2_REF
+
+    #Overall IAQ = worst performing pollutant 
+    iaq = max(ratio_pm25, ratio_pm10, ratio_tvoc, ratio_co2)
+
+    return iaq
 
 
 # =============================
