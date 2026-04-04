@@ -7,28 +7,7 @@ A real-time indoor air quality monitoring system built around the RRH62000 senso
 
 
 
-System Architecture
-RRH62000 Sensor
-       │
-       ▼
-Sensor Logger
- ├──► rrh62000_YYYY-MM-DD_HH.csv
- └──► latest.csv  (symlink to current hour file)
-       │
-       ├──► Watchdog
-       │     └──► alerts_YYYYMMDD_HH.csv
-       │
-       └──► Dashboard (live graphs + alerts)
 
- File Structure
-project/
-├── sensor_logger.py
-├── watchdog.py
-├── dashboard.py
-├── rrh62000_YYYY-MM-DD_HH.csv
-├── latest.csv
-└── alerts/
-    └── alerts_YYYYMMDD_HH.csv
 
  Sensor Logger
 
