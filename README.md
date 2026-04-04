@@ -34,26 +34,6 @@ Live Pointer	latest.csv → rrh62000_2026-03-02_14.csv
 
 All other services read latest.csv for consistency.
 
-IAQ_CUSTOM Calculation:
-
-Parameter	Reference	Weight
-PM2.5	25 µg/m³	40%
-PM10	50 µg/m³	20%
-TVOC	300 µg/m³	20%
-CO₂	1000 ppm	20%
-
-Index Scale:
-
-0–40 → Excellent
-
-40–70 → Good
-
-70–100 → Moderate
-
-100–150 → Poor
-
-150+ → Very Poor
-
  Watchdog
 
 Purpose:
