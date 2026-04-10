@@ -1,12 +1,7 @@
 #!/usr/bin/env python3
 """
 RRH62000 Sensor Logger
-----------------------
-• Reads data via I2C (1 Hz)
-• Logs hourly CSV files (rotated by hour)
-• Automatically writes headers for new files
-• Maintains stable latest.csv symlink
-• Calculates custom Indoor Air Quality (IAQ_CUSTOM)
+
 """
 
 import os
@@ -17,19 +12,19 @@ from datetime import datetime
 from smbus2 import SMBus, i2c_msg
 
 
-# =============================
+
 # CONFIGURATION
-# =============================
+
 
 I2C_BUS = 1
 SENSOR_ADDR = 0x69
 FRAME_LEN = 37
-LOG_INTERVAL = 1  # seconds
+LOG_INTERVAL = 1  
 
 
-# =============================
+
 # CSV FIELD DEFINITIONS
-# =============================
+
 
 FIELDNAMES = [
     "timestamp",
@@ -44,10 +39,18 @@ FIELDNAMES = [
     "crc"
 ]
 
+OFFSET_PM1 = -0.493
+OFFSET_PM25 = -0.543
+OFFSET_PM10 = -0.308
+OFFSET_TVOC = 0.628
+OFFSET_CO2 = -0.691
 
-# =============================
+
+
+
+
 # I2C HELPERS
-# =============================
+
 
 def read_frame(bus):
     """Read one full sensor frame."""
@@ -64,9 +67,9 @@ def s16(data, index):
     return struct.unpack(">h", bytes(data[index:index+2]))[0]
 
 
-# =============================
+
 # IAQ CUSTOM CALCULATION
-# =============================
+
 
 def calculate_custom_iaq(pm25, pm10, tvoc, eco2):
     """
@@ -74,8 +77,8 @@ def calculate_custom_iaq(pm25, pm10, tvoc, eco2):
     
     """
 
-    # Reference limits (EU / WHO)
-    PM25_REF = 25.0
+    # Reference limits (EU)
+    PM25_REF = 50.0
     PM10_REF = 50.0
     TVOC_REF = 300.0
     CO2_REF = 1000.0
@@ -97,9 +100,9 @@ def calculate_custom_iaq(pm25, pm10, tvoc, eco2):
     return iaq
 
 
-# =============================
+
 # FRAME PARSER
-# =============================
+
 
 def parse_frame(data):
     """Convert raw frame into structured dictionary."""
@@ -119,15 +122,15 @@ def parse_frame(data):
         "PM2.5_KCl": u16(data, 14) * 0.1,
         "PM10_KCl": u16(data, 16) * 0.1,
 
-        "PM1_Smoke": u16(data, 18) * 0.1,
-        "PM2.5_Smoke": u16(data, 20) * 0.1,
-        "PM10_Smoke": u16(data, 22) * 0.1,
+        "PM1_Smoke": (u16(data, 18) * 0.1) - (OFFSET_PM1 *(u16(data, 18) *0.1)) ,
+        "PM2.5_Smoke": (u16(data, 20) * 0.1)  - (OFFSET_PM25 *(u16(data, 20) *0.1)),
+        "PM10_Smoke": (u16(data, 22) * 0.1)  - (OFFSET_PM10 *(u16(data, 22) *0.1)),
 
         "Temperature_C": s16(data, 24) * 0.01,
         "Humidity_pct": u16(data, 26) * 0.01,
 
-        "TVOC_ppm": u16(data, 28) * 10 * 0.001 * 0.5,
-        "eCO2_ppm": u16(data, 30),
+        "TVOC_ppm": (u16(data, 28) * 10 * 0.001 * 0.5) - (OFFSET_TVOC * (u16(data, 28) * 10 * 0.001 * 0.5)),
+        "eCO2_ppm": (u16(data, 30))  - (OFFSET_CO2 *(u16(data, 30))),
 
         "IAQ": u16(data, 32) * 0.01,
         "Relative_IAQ": u16(data, 34),
@@ -151,9 +154,9 @@ def parse_frame(data):
     return values
 
 
-# =============================
+
 # CSV HANDLING
-# =============================
+
 
 def current_csv_filename():
     return f"rrh62000_{datetime.now():%Y-%m-%d_%H}.csv"
@@ -182,9 +185,9 @@ def update_latest_symlink(current_file):
         pass
 
 
-# =============================
+
 # MAIN LOOP
-# =============================
+
 
 def main():
     with SMBus(I2C_BUS) as bus:

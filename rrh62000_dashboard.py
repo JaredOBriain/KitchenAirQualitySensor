@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 """
 RRH62000 Live Dashboard
------------------------
-• Displays live sensor data
-• Uses hourly rotating CSV
-• Shows alert panel
-• Dark themed
+
 """
 
 import os
@@ -18,9 +14,9 @@ from matplotlib.animation import FuncAnimation
 from datetime import datetime
 
 
-# =============================
+
 # CONFIGURATION
-# =============================
+
 
 MAX_POINTS = 90
 UPDATE_INTERVAL_MS = 1100
@@ -31,9 +27,9 @@ EXCLUDE_PREFIXES = ["NC_"]
 EXCLUDE_COLUMNS = ["status", "crc", "Relative_IAQ", "IAQ"]  # remove old IAQ
 
 
-# =============================
-# VISUAL STYLE
-# =============================
+
+# VISUAL
+
 
 plt.style.use("dark_background")
 
@@ -64,9 +60,9 @@ UNIT_MAP = {
 }
 
 
-# =============================
+
 # FILE HELPERS
-# =============================
+
 def read_latest_data():
     filename = "latest.csv"
 
@@ -129,9 +125,9 @@ def get_latest_alerts():
         return []
 
 
-# =============================
+
 # PLOT HELPERS
-# =============================
+
 
 def get_plot_columns(df):
     return [
@@ -156,9 +152,9 @@ def get_unit(col):
     return ""
 
 
-# =============================
-# INITIAL SETUP
-# =============================
+
+# SETUP
+
 
 df_init = read_latest_data()
 if df_init is None:
@@ -218,9 +214,8 @@ for j in range(num_plots, len(axes)):
     axes[j].set_visible(False)
 
 
-# =============================
 # ALERT BOX
-# =============================
+
 
 alert_box = fig.text(
     0.68,
@@ -242,9 +237,9 @@ alert_box = fig.text(
 alert_box.set_visible(False)
 
 
-# =============================
+
 # ANIMATION LOOP
-# =============================
+
 
 def update(frame):
     df = read_latest_data()

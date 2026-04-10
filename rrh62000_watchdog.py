@@ -1,12 +1,7 @@
 #!/usr/bin/env python3
 """
 RRH62000 Watchdog Service
--------------------------
-• Monitors latest hourly sensor CSV
-• Computes rolling averages
-• Checks limits with exposure tracking
-• Logs alerts to hourly rotating alert CSV
-• Flashes GPIO LED on alert
+
 """
 
 import os
@@ -17,12 +12,12 @@ from collections import deque, defaultdict
 import RPi.GPIO as GPIO
 
 
-# =============================
-# CONFIGURATION
-# =============================
 
-SAMPLE_WINDOW = 60          # Rolling sample window
-CHECK_INTERVAL = 10         # Seconds between evaluations
+# CONFIGURATION
+
+
+SAMPLE_WINDOW = 60          
+CHECK_INTERVAL = 10         
 
 
 LED_GPIO = 16
@@ -34,9 +29,9 @@ ALERT_CSV_DIR = "./alerts"
 os.makedirs(ALERT_CSV_DIR, exist_ok=True)
 
 
-# =============================
+
 # LIMIT DEFINITIONS
-# =============================
+
 
 LIMITS = {
 
@@ -44,32 +39,32 @@ LIMITS = {
     "Temperature_C": {"max": 35.0},
     "Humidity_pct": {"max": 70.0},
 
-    # Particulate Matter (KCl)
-    "PM1_KCl": {"max": 15.0},
-    "PM2.5_KCl": {"max": 30.0},
-    "PM10_KCl": {"max": 75.0},
+    # Particulate Matter (KCl) not used
+    "PM1_KCl": {"max": 1000.0},
+    "PM2.5_KCl": {"max": 1000.0},
+    "PM10_KCl": {"max": 1000.0},
 
     # Particulate Matter (Smoke)
-    "PM1_Smoke": {"max": 20.0},
-    "PM2.5_Smoke": {"max": 30.0},
-    "PM10_Smoke": {"max": 75.0},
+    "PM1_Smoke": {"max": 25.0},
+    "PM2.5_Smoke": {"max": 50.0},
+    "PM10_Smoke": {"max": 50.0},
 
     # Gases
     "TVOC_ppm": {"max": 300},
     "eCO2_ppm": {"max": 1000},
 
     # Custom IAQ
-    "IAQ_CUSTOM": {"max": 100}
+    "IAQ_CUSTOM": {"max": 1.5}
 }
 
 
-# Tracks consecutive over-limit samples
+
 exposure_counters = defaultdict(int)
 
 
-# =============================
+
 # ALERT CSV HANDLING
-# =============================
+
 
 def get_alert_csv_path():
     """Return hourly alert CSV filename."""
@@ -111,9 +106,9 @@ def write_alerts_to_csv(alerts):
             ])
 
 
-# =============================
+
 # LED CONTROL
-# =============================
+
 
 def setup_led():
     GPIO.setmode(GPIO.BCM)
@@ -129,9 +124,9 @@ def flash_led(times):
         time.sleep(LED_OFF_TIME)
 
 
-# =============================
+
 # CSV PROCESSING
-# =============================
+
 
 
 
@@ -160,9 +155,9 @@ def compute_averages(buffers):
     }
 
 
-# =============================
+
 # LIMIT CHECKING
-# =============================
+
 
 def check_limits_with_exposure(averages):
     """Check limits and apply exposure tracking."""
@@ -190,9 +185,9 @@ def check_limits_with_exposure(averages):
     return alerts
 
 
-# =============================
+
 # MAIN LOOP
-# =============================
+
 
 def main():
     print("RRH62000 Watchdog Started")
